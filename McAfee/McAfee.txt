@@ -1,0 +1,9 @@
+At least for versions 4.0.70 for the engine, and 4.0.4088 for the dat files, 
+McAfee VirusScan warns that BBtray is infected with QDEL110 virus. 
+It's a false alarm!!
+
+After contacting NAI here in Brasil, they have sent me an 'Extra.dat' file 
+(included with BBtray distribution) that, when put in the same directory where 
+the others .dat files reside, disable this false alarm. 
+
+For more details, search the archives of BB mailing list or send an email to me.

@@ -1,0 +1,92 @@
+BBTRAY HISTORY
+--------------
+
+2001/11/26 - v0.9.1 - Bug Fix: Now you can use SSL *with* password protection.
+                      Thanks, Jeff Stoner.
+
+2001/11/12 - v0.9   - New: Programmable strings on tray icon's hint (HintString)
+                      and on popup window (PopupString). See bbtray.ini for
+                      details.
+
+                    - Removed: URLOnHint option. You can simulate it by
+                      setting HintString=%C: %U. See above.
+
+                    - New: No more need to start one bbtray.exe for each section
+                      of bbtray.ini. It will be done automagically by the first
+                      bbtray started.
+
+                    - New: Support for SSL (https). Check Readme.txt
+
+                    - New: Changed the bbtray.exe's icon. Thanks Martin Parrott.
+
+2001/06/20 - v0.8.3 - Bug Fix: Indy does not handles the http://user:pass@host
+                      syntax... sic :( Now it should work properly. Thanks
+                      Michael Beer and Martin Lathoud for testing it.
+
+2001/05/25 - v0.8   - New: Icons shown on the tray can now be changed using the
+                      new IconsPath option on the INI file. See BBTRAY.INI
+                      for details.
+
+                    - Changed the underlying HTTP code from WININET.DLL to Indy
+                      (http://www.nevrona.com/Indy/). I think we'll get less
+                      'Access Violations' from now on.
+
+2001/02/07 - v0.7   - Bug Fix: Sound problem on NT/2000 fixed. No more Access
+                      Violations when sounds should be played.
+
+2000/12/?? - v0.6 UNRELEASED - Pressing <Enter> on the Popup window starts
+                      the browser, the same as clicking on the window. And now
+                      this window closes when clicked or <Enter> is pressed.
+
+2000/08/02 - v0.5   - New: URLOnHint. Show the URL of the BBDISPLAY page on the
+                      tray hint, instead of its title. Useful when runing multiple
+                      instances of BBtray.
+
+                    - Changed the name of some options of the INI file: SoundsPath
+                      instead of SoundsURL and PollFrequency instead of PoolTime.
+                      But BBtray is backwards compatible ;)
+
+                    - Changed the colored tray icon. It will be customizable in
+                      the next version
+
+2000/03/31 - v0.4   - New: Proxy configuration! See BBTRAY.INI for details
+
+                    - New: SoundsURL can now be a local path, for per-station
+                      customization of sounds. Thanks Adam Goryachev.
+
+                    - New: HTTP authentication. See BBTRAY.INI for details
+
+                    - Changed the example soundfiles set.
+
+2000/03/28 - v0.3   - Bug fix: No more Access Violation on startup when running on
+                      Windows NT/2000.
+
+                    - Bug fix: The in-line comments on the example INI file were
+                      confusing BBtray. Changed INI file and added some protection
+                      inside the program.
+
+                    - New Ini Option: PopupLevels defines the colors that should
+                      popup the warning window.
+
+2000/03/27 - v0.2   - Code overhauled.
+
+                    - Added support for more then one BBDISPLAY (see the comments
+                      on the BBTRAY.INI).
+
+                    - Put all messages on the INI file, making possible the
+                      customization/translation of it.
+
+                    - Clicking on the popup warning window should now open the
+                      BBDISPLAY page with your default browser (the same as
+                      double-clicking the tray icon).
+
+2000/03/24 - v0.1   - Added support for external (.ini) configuration.
+
+                    - First release to {bb} mailing list, trying to help
+                      Meredith Peruzzi.
+
+1999/11/** - v0.0   - Initial version(s).
+
+                    - Not released to my Brothers, only used inside
+                      the company I work for.
+
