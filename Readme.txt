@@ -2,7 +2,7 @@
 
      BBtray 0.9.1
 
-     (c)1999,2001 by Deluan Cotts
+     (c)1999,2002 by Deluan Cotts
 
 
 
@@ -76,7 +76,7 @@ TODO/WISH LIST
 - Make the code multithreaded, enabling one instance of BBtray to monitor as
   many BBDISPLAY as needed
 - Also act as screensaver
-- Port to Linux (using Kylix)
+- Port to Linux
 - You say...
 
 
