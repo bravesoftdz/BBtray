@@ -2,7 +2,8 @@
 ; BBTRAY.INI - BBtray Configuration File
 ;
 ; This file must be in the same directory as the BBTRAY.EXE.
-; Changes will only take effect on restart of BBtray
+; Changes will only take effect on restart of BBtray.
+; Lines starting with semicolons (;) are comments.
 ;
 ;
 
@@ -14,7 +15,6 @@
 ; URL of the BBDISPLAY page BBtray will check
 ; For password protected pages, use this syntax:
 ; http://username:password@bb.domain.com/bb/bb2.html
-;
 ;DisplayURL=http://192.168.0.1/bb/bb2.html
 
 ; Location for sound files. Must be ended with a "\"
@@ -22,17 +22,14 @@
 ; "y.wav" for yellow and "p.wav" for purple (all lowercase);
 ; This can also be an URL, like in:
 ; SoundsPath=http://192.168.0.1/bb/sounds/
-;
 ;SoundsPath=C:\BBtray\Sounds\
 
 ; Location for icons files. Must be ended with a "\"
 ; The icons files must be named: "r.ico" for red, "g.ico" for green,
 ; "y.ico" for yellow and "p.ico" for purple (all lowercase);
-;
 ;IconsPath=C:\BBtray\Icons\
 
 ; Proxy Address (can be FDQN:port or IP:port)
-;
 ;ProxyName=192.168.0.200:3128
 
 ; 15 seconds between checks
@@ -41,7 +38,7 @@
 ; 15 mins between red sound alerts
 ;PageDelay=900
 
-; Status colors that should show the warning pop-up window
+; Status colors that must show the warning pop-up window
 ;PopupLevels=r,p,y,g
 
 ; String for tray icon's hint and pop-up window. Can include the following
@@ -55,6 +52,13 @@
 ; OBS: Max HintString size is 63 chars.
 ;HintString=My Servers: %T
 ;PopupString=My Servers: %U\n%T
+
+; Command line to be executed when you double-click the warning pop-up.
+; DisplayURLParams can use the same fields identifiers as above (except \n).
+; If you want that DisplayURL page appears in a new window, try the example
+; lines bellow:
+;DisplayURLCmd=iexplore
+;DisplayURLParams=%U
 
 ;--------------------------------------------------------------------------
 ; These are the messages displayed by BBtray

@@ -1,8 +1,8 @@
 
 
-     BBtray 0.9.1
+     BBtray 0.9.2
 
-     (c)1999,2002 by Deluan Cotts
+     (c)1999,2004 by Deluan Cotts
 
 
 
@@ -46,10 +46,10 @@ SSL SUPPORT
 You can use SSL URL's (https) with BBtray, as long as you install OpenSSL for
 Indy in the system it will run. You can download OpenSSL DLL's for free from:
 
-http://www.intelicom.si/download.php?op=getit&lid=4
+http://www.intelicom.si/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=4
 
 or download BBtray-SSL.zip from the same place you've download this package. 
-This one includes the file indy_openssl096.zip, with the necessary DLL's.
+That one includes the file indy_openssl096.zip, with the necessary DLL's.
 
 Uncompress the DLL's in the Windows directory (normally C:\WINDOWS or C:\WINNT).
 

@@ -17,10 +17,21 @@ object MainForm: TMainForm
   object CoolTrayIcon1: TCoolTrayIcon
     IconList = ImageList1
     CycleInterval = 200
-    ShowHint = True
+    Icon.Data = {
+      0000010001001010040000000000280100001600000028000000100000002000
+      0000010004000000000080000000000000000000000000000000000000000000
+      000000008000008000000080800080000000800080008080000080808000C0C0
+      C0000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00BBBB
+      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB000
+      00BBB00000BBB00BB00BB00BB00BB00BB00BB00BB00BB00BB00BB00BB00BB000
+      00BBB00000BBB00BB00BB00BB00BB00BB00BB00BB00BB00BB00BB00BB00BB000
+      00BBB00000BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000}
+    IconIndex = 0
     PopupMenu = PopupMenu1
-    StartMinimized = True
     MinimizeToTray = True
+    OnStartup = CoolTrayIcon1Startup
     Left = 36
     Top = 20
   end
@@ -266,13 +277,21 @@ object MainForm: TMainForm
       000000000000}
   end
   object http: TIdHTTP
-    Intercept = IdConnectionInterceptOpenSSL1
-    Request.Accept = 'text/html, */*'
+    IOHandler = IdSSLIOHandlerSocket1
+    MaxLineAction = maException
+    ReadTimeout = 0
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
     Request.ContentLength = 0
     Request.ContentRangeEnd = 0
     Request.ContentRangeStart = 0
-    Request.ProxyPort = 0
+    Request.ContentType = 'text/html'
+    Request.Accept = 'text/html, */*'
+    Request.BasicAuthentication = False
     Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    HTTPOptions = [hoForceEncodeParams]
+    OnAuthorization = httpAuthorization
     Left = 158
     Top = 20
   end
@@ -281,7 +300,7 @@ object MainForm: TMainForm
     Left = 220
     Top = 20
   end
-  object IdConnectionInterceptOpenSSL1: TIdConnectionInterceptOpenSSL
+  object IdSSLIOHandlerSocket1: TIdSSLIOHandlerSocket
     SSLOptions.Method = sslvSSLv2
     SSLOptions.Mode = sslmUnassigned
     SSLOptions.VerifyMode = []

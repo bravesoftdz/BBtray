@@ -1,6 +1,11 @@
 BBTRAY HISTORY
 --------------
 
+2003/03/04 - v0.9.2 - New: DisplayURLCmd and DisplayURLParams: Define the
+                      command line to be executed when you double-click the
+                      warning pop-up. DisplayURLParams can use the same field
+                      identifiers of HintString. See bbtray.ini for details.
+
 2001/11/26 - v0.9.1 - Bug Fix: Now you can use SSL *with* password protection.
                       Thanks, Jeff Stoner.
 

@@ -21,11 +21,13 @@ uses
   ImgList, CoolTrayIcon, ExtCtrls, Menus, ShellApi,
   MMSystem, IniFiles, IdBaseComponent, IdComponent, IdTCPConnection,
   IdTCPClient, IdHTTP, IdAntiFreezeBase, IdAntiFreeze, IdIntercept,
-  IdSSLIntercept, IdSSLOpenSSL;
+  IdSSLOpenSSL, IdIOHandler, IdIOHandlerSocket, IdAuthentication;
 
-const VERSION       = '0.9.1a';
+const VERSION       = '0.9.2-b3';
       INIFILE       = 'BBTRAY.INI';
       BBDISPLAY     = '';
+      DISPLAYURLCMD = '';
+      DISPLAYURLPARAMS = '%U';
       BBSOUNDS      = '.\';
       BBICONS       = '.\';
       POLLFREQUENCY = 15;       // 15 seconds between checks
@@ -45,16 +47,22 @@ type
     About1: TMenuItem;
     http: TIdHTTP;
     IdAntiFreeze1: TIdAntiFreeze;
-    IdConnectionInterceptOpenSSL1: TIdConnectionInterceptOpenSSL;
+    IdSSLIOHandlerSocket1: TIdSSLIOHandlerSocket;
     procedure FormCreate(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure CoolTrayIcon1DblClick(Sender: TObject);
     procedure About1Click(Sender: TObject);
+    procedure CoolTrayIcon1Startup(Sender: TObject;
+      var ShowMainForm: Boolean);
+    procedure httpAuthorization(Sender: TObject;
+      Authentication: TIdAuthentication; var Handled: Boolean);
   private
     { Private declarations }
     FirstAlertTime: DWORD;
     FSound: TMemoryStream;
+    FDisplayURLCmd: String;
+    FDisplayURLParams: String;
     FSoundHttp: TIdHTTP;
     FSoundsURL: String;
     FPollFrequency: Integer;
@@ -71,6 +79,8 @@ type
     FShowHTTPError: Boolean;
     FColor: String;
     FTitle: String;
+    FUsername: String;
+    FPassword: String;
     procedure LoadConfig(SectionName: String);
     procedure ShowStatus(NewStatus: String);
     procedure PlayStatus(NewStatus: String);
@@ -79,7 +89,7 @@ type
       var NewURL: String; var Port: Integer);
     function PrepareURL(URL: String; H: TIdHTTP): String;
     procedure SetProxy(H: TIdHTTP);
-    function FormatCaption(FmtStr: String): String;
+    function ProcessFields(FmtStr: String): String;
     procedure StartAll(List: TStrings);
   public
     { Public declarations }
@@ -91,7 +101,7 @@ var
 
 implementation
 
-uses Mesg;
+uses Mesg, IdHTTPHeaderInfo;
 
 const MAXCOLORS   = 4;
       ColorChars  = 'yprg';
@@ -159,8 +169,8 @@ begin
      Result := URL;
      I := Pos('@', URL);
      if I = 0 then begin
-        H.Request.Username := '';
-        H.Request.Password := '';
+        FUsername := '';
+        FPassword := '';
      end
      else begin
         if Copy(URL, 1, 5) = 'https' then begin
@@ -174,9 +184,9 @@ begin
         Delete(Result, AuthPos, AuthLen);
         S := Copy(URL, AuthPos, AuthLen-1);
         I := Pos(':', S);
-        H.Request.Username := Copy(S, 1, I-1);
-        H.Request.Password := Copy(S, I+1, 255);
-        S := H.Request.Password;
+        FUsername := Copy(S, 1, I-1);
+        FPassword := Copy(S, I+1, 255);
+        S := FPassword;
      end;
      ParseURL(Result, 0, S, I);
      H.Port := I;
@@ -187,11 +197,11 @@ var U: String;
     P: Integer;
 begin
      ParseURL(FProxyName, PROXYPORT, U, P);
-     H.Request.ProxyServer := U;
-     H.Request.ProxyPort := P;
+     H.ProxyParams.ProxyServer := U;
+     H.ProxyParams.ProxyPort := P;
 end;
 
-function TMainForm.FormatCaption(FmtStr: String): String;
+function TMainForm.ProcessFields(FmtStr: String): String;
 var I: Integer;
     Ident: Char;
     Value: String;
@@ -227,6 +237,8 @@ var Ini: TIniFile;
     SectionList: TStringList;
 begin
      FDisplayURL := BBDISPLAY;
+     FDisplayURLCmd := DISPLAYURLCMD;
+     FDisplayURLParams := DISPLAYURLPARAMS;
      FSoundsURL := BBSOUNDS;
      FIconsPath := BBICONS;
      FPollFrequency := POLLFREQUENCY;
@@ -236,6 +248,8 @@ begin
      Ini := TIniFile.Create(ExtractFilePath(ParamStr(0)) + INIFILE);
      try
         FDisplayURL := NoComment(Ini.ReadString('General', 'DisplayURL', BBDISPLAY));
+        FDisplayURLCmd := NoComment(Ini.ReadString('General', 'DisplayURLCmd', DISPLAYURLCMD));
+        FDisplayURLParams := NoComment(Ini.ReadString('General', 'DisplayURLParams', DISPLAYURLPARAMS));
         FSoundsURL := NoComment(Ini.ReadString('General', 'SoundsURL', BBSOUNDS)); // Backwards compatible
         FSoundsURL := NoComment(Ini.ReadString('General', 'SoundsPath', FSoundsURL));
         FIconsPath := NoComment(Ini.ReadString('General', 'IconsPath', FIconsPath));
@@ -249,6 +263,8 @@ begin
 
         if SectionName <> '' then begin
            FDisplayURL := NoComment(Ini.ReadString(SectionName, 'DisplayURL', FDisplayURL));
+           FDisplayURLCmd := NoComment(Ini.ReadString(SectionName, 'DisplayURLCmd', FDisplayURLCmd));
+           FDisplayURLParams := NoComment(Ini.ReadString(SectionName, 'DisplayURLParams', FDisplayURLParams));
            FSoundsURL := NoComment(Ini.ReadString(SectionName, 'SoundsURL', FSoundsURL)); // Backwards compatible
            FSoundsURL := NoComment(Ini.ReadString(SectionName, 'SoundsPath', FSoundsURL));
            FIconsPath := NoComment(Ini.ReadString(SectionName, 'IconsPath', FIconsPath));
@@ -323,6 +339,8 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+     FUsername := '';
+     FPassword := '';
      LoadConfig(ParamStr(1));
      LoadIcons;
      SetProxy(http);
@@ -345,7 +363,7 @@ begin
         if FPopupString = '' then
            frmMesg.ShowMesg(FTitle, ColorColors[Pos(NewStatus, ColorChars)])
         else
-           frmMesg.ShowMesg(FormatCaption(FPopupString), ColorColors[Pos(NewStatus, ColorChars)]);
+           frmMesg.ShowMesg(ProcessFields(FPopupString), ColorColors[Pos(NewStatus, ColorChars)]);
      end;
 end;
 
@@ -370,6 +388,7 @@ begin
         else begin
            if not Assigned(FSoundHttp) then begin
               FSoundHttp := TIdHTTP.Create(Nil);
+              FSoundHttp.OnAuthorization := httpAuthorization;
               SetProxy(FSoundHttp);
            end;
            FSoundHttp.Get(PrepareURL(URL, FSoundHttp), FSound);
@@ -390,7 +409,6 @@ begin
      HTTPError := True;
      try
         LastStatus := Copy(FTitle, 1, 1);
-//        CoolTrayIcon1.CycleIcons := False;
         CoolTrayIcon1.Hint := FMsgVerify;
         FTitle := '';
         FColor := '';
@@ -448,7 +466,7 @@ begin
      finally
         if not HTTPError then begin
            if FHintString <> '' then
-              CoolTrayIcon1.Hint := Copy(FormatCaption(FHintString), 1, 63)
+              CoolTrayIcon1.Hint := Copy(ProcessFields(FHintString), 1, 63)
            else
               CoolTrayIcon1.Hint := FTitle;
         end;
@@ -463,8 +481,12 @@ end;
 
 procedure TMainForm.CoolTrayIcon1DblClick(Sender: TObject);
 begin
-  ShellExecute(Application.MainForm.Handle, Nil, PChar(FDisplayURL),
-               Nil, Nil, SW_SHOW);
+  if FDisplayURLCmd <> '' then
+     ShellExecute(Application.MainForm.Handle, Nil, PChar(FDisplayURLCmd),
+                  PChar(ProcessFields(FDisplayURLParams)), Nil, SW_SHOW)
+  else
+     ShellExecute(Application.MainForm.Handle, Nil,
+                  PChar(ProcessFields(FDisplayURLParams)), Nil, Nil, SW_SHOW);
 end;
 
 procedure TMainForm.About1Click(Sender: TObject);
@@ -473,6 +495,20 @@ begin
                 'A Big Brother (http://bb4.com) companion' + #13 +
                 'by Deluan (bbtray@deluan.com.br)', mtInformation, [mbOk], 0);
 
+end;
+
+procedure TMainForm.CoolTrayIcon1Startup(Sender: TObject;
+  var ShowMainForm: Boolean);
+begin
+     ShowMainForm := False;
+end;
+
+procedure TMainForm.httpAuthorization(Sender: TObject;
+  Authentication: TIdAuthentication; var Handled: Boolean);
+begin
+     Authentication.Username := FUsername;
+     Authentication.Password := FPassword;
+     Handled := True;
 end;
 
 end.
