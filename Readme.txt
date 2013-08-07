@@ -1,3 +1,13 @@
+-------------------------------------------------------------------------------------
+ATTENTION: This project has not been updated in the last 10 years, and I don't even
+know if this code still works with the latest versions of Big Brother (www.bb4.org).
+
+To build it you will need Borland Delphi 7 (don't know if newer versions will compile it)
+-------------------------------------------------------------------------------------
+
+
+
+ORIGINAL README.TXT:
 
 
      BBtray 0.9.2
