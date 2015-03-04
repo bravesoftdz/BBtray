@@ -1,9 +1,15 @@
--------------------------------------------------------------------------------------
-ATTENTION: This project has not been updated in the last 10 years, and I don't even
-know if this code still works with the latest versions of Big Brother (www.bb4.org).
+------------------------------------------------------------------------------
+ATTENTION: This project has not been updated since 2004, and I don't even know
+if this code still works with the latest versions of Big Brother (www.bb4.com)
 
-To build it you will need Borland Delphi 7 (don't know if newer versions will compile it)
--------------------------------------------------------------------------------------
+To build it you will need Borland Delphi 7 (don't know if newer versions will
+compile it)
+
+The last binary available can be downloaded from Dell: http://goo.gl/FGFMX7
+And the package with the SSL library included is here: http://goo.gl/7fopR5
+
+It should work also with Xymon/Hobbit: http://xymon.sourceforge.net
+------------------------------------------------------------------------------
 
 
 
@@ -34,7 +40,7 @@ windows in your way and your attention grabbed anywhere in the room
 
 HOW TO INSTALL?
 ---------------
-1) Uncompress BBtray.zip to a new directory (ex: "C:\BBTRAY"). Remember to 
+1) Uncompress BBtray.zip to a new directory (ex: "C:\BBTRAY"). Remember to
    mantain the directory structure ("Use folder names" option in WinZip)
 2) Rename "BBTRAY.INI.DIST" to "BBTRAY.INI" and customize it
    (see the details inside it)
@@ -58,7 +64,7 @@ Indy in the system it will run. You can download OpenSSL DLL's for free from:
 
 http://www.intelicom.si/modules.php?op=modload&name=Downloads&file=index&req=getit&lid=4
 
-or download BBtray-SSL.zip from the same place you've download this package. 
+or download BBtray-SSL.zip from the same place you've download this package.
 That one includes the file indy_openssl096.zip, with the necessary DLL's.
 
 Uncompress the DLL's in the Windows directory (normally C:\WINDOWS or C:\WINNT).
@@ -98,13 +104,13 @@ please contact me.
 
 Use it at your own risk. Again: USE IT AT YOUR OWN RISK.
 
-*IMPORTANT*: BBtray does not give you any legal rights to use SSL. Using SSL 
-in some nations may be illegal. It is up to you to determine the legal 
+*IMPORTANT*: BBtray does not give you any legal rights to use SSL. Using SSL
+in some nations may be illegal. It is up to you to determine the legal
 situation in your nation.
 
 And just to be sure: USE BBTRAY AT YOUR OWN RISK.
 
-Also I'd like to give my thanks to Martin Parrot, for BBtray.exe's icon. 
+Also I'd like to give my thanks to Martin Parrot, for BBtray.exe's icon.
 
 
 
